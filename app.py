@@ -253,70 +253,197 @@ def index():
     <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>UPB Admitere Data</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
-            body { padding: 20px; }
-            .table-container { margin-bottom: 40px; }
-            .table { width: 100%; margin-bottom: 1rem; }
-            .table th { background-color: #f8f9fa; }
-            .table-bordered { border: 1px solid #dee2e6; }
-            .table-bordered td, .table-bordered th { border: 1px solid #dee2e6; }
+            body { 
+                padding: 20px; 
+                font-size: 16px;
+            }
+            .table-container { 
+                margin-bottom: 40px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .table { 
+                width: 100%; 
+                margin-bottom: 1rem;
+            }
+            .table th { 
+                background-color: #f8f9fa;
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                font-size: 1.1rem;
+                padding: 12px;
+            }
+            .table td {
+                padding: 12px;
+                font-size: 1rem;
+            }
+            .table-bordered { 
+                border: 1px solid #dee2e6; 
+            }
+            .countdowns-container {
+                display: flex;
+                gap: 20px;
+                margin-bottom: 30px;
+                flex-wrap: wrap;
+            }
+            
             .countdown {
+                flex: 1;
+                min-width: 300px;
                 background-color: #f8f9fa;
                 padding: 20px;
                 border-radius: 10px;
-                margin-bottom: 30px;
                 text-align: center;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            
+            .countdown h2 {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+                color: #333;
             }
             .countdown-number {
-                font-size: 24px;
+                font-size: 1.3rem;
                 font-weight: bold;
                 color: #0d6efd;
-            }
-            .countdown-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
                 gap: 20px;
+            }
+            .countdown-unit {
+                display: inline-block;
+                min-width: 100px;
+                padding: 10px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            h1 {
+                font-size: 2.5rem;
                 margin-bottom: 30px;
+                color: #333;
+            }
+            h2 {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+                color: #444;
+            }
+            
+            /* Desktop-specific styles */
+            @media (min-width: 1200px) {
+                .container-fluid {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                }
+                .table {
+                    white-space: normal;
+                }
+                body {
+                    padding: 30px;
+                }
+                .countdown {
+                    min-width: 350px;
+                }
+            }
+            
+            /* Tablet-specific styles */
+            @media (min-width: 769px) and (max-width: 1199px) {
+                body {
+                    padding: 20px;
+                }
+                h1 {
+                    font-size: 2rem;
+                }
+                h2 {
+                    font-size: 1.5rem;
+                }
+                .countdown h2 {
+                    font-size: 1.3rem;
+                }
+                .countdown-number {
+                    font-size: 1.2rem;
+                }
+                .countdown {
+                    min-width: 300px;
+                }
+            }
+            
+            /* Mobile-specific styles */
+            @media (max-width: 768px) {
+                body {
+                    padding: 10px;
+                }
+                .countdowns-container {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                .countdown {
+                    min-width: 100%;
+                }
+                .countdown-number {
+                    font-size: 1rem;
+                }
+                .countdown-unit {
+                    min-width: 70px;
+                    padding: 5px;
+                }
+                .table {
+                    font-size: 13px;
+                    white-space: nowrap;
+                }
+                h1 {
+                    font-size: 1.75rem;
+                }
+                h2 {
+                    font-size: 1.25rem;
+                }
+                .table th, .table td {
+                    padding: 8px;
+                }
             }
         </style>
     </head>
     <body>
-        <div class="container">
-            <div class="countdown-grid">
+        <div class="container-fluid">
+            <div class="countdowns-container">
                 <div class="countdown" id="countdown-simulare">
                     <h2>Simulare</h2>
                     <div class="countdown-number">
-                        <span id="days-simulare">0</span> zile
-                        <span id="hours-simulare">0</span> ore
-                        <span id="minutes-simulare">0</span> minute
-                        <span id="seconds-simulare">0</span> secunde
+                        <div class="countdown-unit"><span id="days-simulare">0</span> zile</div>
+                        <div class="countdown-unit"><span id="hours-simulare">0</span> ore</div>
+                        <div class="countdown-unit"><span id="minutes-simulare">0</span> minute</div>
+                        <div class="countdown-unit"><span id="seconds-simulare">0</span> sec</div>
                     </div>
                 </div>
 
                 <div class="countdown" id="countdown-inscrieri">
                     <h2>Încheierea Înscrierilor</h2>
                     <div class="countdown-number">
-                        <span id="days-inscrieri">0</span> zile
-                        <span id="hours-inscrieri">0</span> ore
-                        <span id="minutes-inscrieri">0</span> minute
-                        <span id="seconds-inscrieri">0</span> secunde
+                        <div class="countdown-unit"><span id="days-inscrieri">0</span> zile</div>
+                        <div class="countdown-unit"><span id="hours-inscrieri">0</span> ore</div>
+                        <div class="countdown-unit"><span id="minutes-inscrieri">0</span> minute</div>
+                        <div class="countdown-unit"><span id="seconds-inscrieri">0</span> sec</div>
                     </div>
                 </div>
 
                 <div class="countdown" id="countdown-preadmitere">
                     <h2>Preadmitere</h2>
                     <div class="countdown-number">
-                        <span id="days-preadmitere">0</span> zile
-                        <span id="hours-preadmitere">0</span> ore
-                        <span id="minutes-preadmitere">0</span> minute
-                        <span id="seconds-preadmitere">0</span> secunde
+                        <div class="countdown-unit"><span id="days-preadmitere">0</span> zile</div>
+                        <div class="countdown-unit"><span id="hours-preadmitere">0</span> ore</div>
+                        <div class="countdown-unit"><span id="minutes-preadmitere">0</span> minute</div>
+                        <div class="countdown-unit"><span id="seconds-preadmitere">0</span> sec</div>
                     </div>
                 </div>
             </div>
 
-            <h1 class="mb-4">UPB Admitere Data</h1>
+            <h1>UPB Admitere Data</h1>
             
             <div class="table-container">
                 <h2>Total Inscrieri per Facultate</h2>
