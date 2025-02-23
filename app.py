@@ -177,7 +177,7 @@ def calculate_competition_ratio(total_df, faculty_totals_df):
     
     # Merge the dataframes
     competition_df = pd.merge(
-        total_df[['Facultatea', 'Total']], 
+        total_df[['Facultatea', 'Total Inscrieri']], 
         faculty_totals_df,
         on='Facultatea',
         how='left'
@@ -188,12 +188,12 @@ def calculate_competition_ratio(total_df, faculty_totals_df):
     print(competition_df)
     
     # Ensure numeric types
-    competition_df['Total'] = pd.to_numeric(competition_df['Total'])
+    competition_df['Total Inscrieri'] = pd.to_numeric(competition_df['Total Inscrieri'])
     competition_df['Total locuri disponibile'] = pd.to_numeric(competition_df['Total locuri disponibile'])
     
     # Calculate ratio
     competition_df['Candidati per loc'] = (
-        competition_df['Total'] / competition_df['Total locuri disponibile']
+        competition_df['Total Inscrieri'] / competition_df['Total locuri disponibile']
     ).round(2)
     
     # Print final result for debugging
@@ -223,7 +223,7 @@ def index():
         'Nr. Inscrieri_inscrieri': 'Nr Inscrieri Validate',
         'Nr. Inscrieri_preinscrieri': 'Nr Inscrieri Nevalidate'
     })
-    total_df['Total'] = total_df['Nr Inscrieri Validate'] + total_df['Nr Inscrieri Nevalidate']
+    total_df['Total Inscrieri'] = total_df['Nr Inscrieri Validate'] + total_df['Nr Inscrieri Nevalidate']
     
     # Convert DataFrames to HTML
     inscrieri_table = inscrieri_df.to_html(classes='table table-striped table-bordered', index=False)
@@ -262,10 +262,60 @@ def index():
             .table th { background-color: #f8f9fa; }
             .table-bordered { border: 1px solid #dee2e6; }
             .table-bordered td, .table-bordered th { border: 1px solid #dee2e6; }
+            .countdown {
+                background-color: #f8f9fa;
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            .countdown-number {
+                font-size: 24px;
+                font-weight: bold;
+                color: #0d6efd;
+            }
+            .countdown-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
         </style>
     </head>
     <body>
         <div class="container">
+            <div class="countdown-grid">
+                <div class="countdown" id="countdown-simulare">
+                    <h2>Simulare</h2>
+                    <div class="countdown-number">
+                        <span id="days-simulare">0</span> zile
+                        <span id="hours-simulare">0</span> ore
+                        <span id="minutes-simulare">0</span> minute
+                        <span id="seconds-simulare">0</span> secunde
+                    </div>
+                </div>
+
+                <div class="countdown" id="countdown-inscrieri">
+                    <h2>Încheierea Înscrierilor</h2>
+                    <div class="countdown-number">
+                        <span id="days-inscrieri">0</span> zile
+                        <span id="hours-inscrieri">0</span> ore
+                        <span id="minutes-inscrieri">0</span> minute
+                        <span id="seconds-inscrieri">0</span> secunde
+                    </div>
+                </div>
+
+                <div class="countdown" id="countdown-preadmitere">
+                    <h2>Preadmitere</h2>
+                    <div class="countdown-number">
+                        <span id="days-preadmitere">0</span> zile
+                        <span id="hours-preadmitere">0</span> ore
+                        <span id="minutes-preadmitere">0</span> minute
+                        <span id="seconds-preadmitere">0</span> secunde
+                    </div>
+                </div>
+            </div>
+
             <h1 class="mb-4">UPB Admitere Data</h1>
             
             <div class="table-container">
@@ -290,10 +340,36 @@ def index():
 
         </div>
 
-        
-        <footer class="container mt-4">
-            <p class="text-muted">Last updated: {{ current_time }}</p>
-        </footer>
+        <script>
+            function createCountdown(targetDate, idPrefix) {
+                const countDownDate = new Date(targetDate).getTime();
+
+                return setInterval(function() {
+                    const now = new Date().getTime();
+                    const distance = countDownDate - now;
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    document.getElementById(`days-${idPrefix}`).textContent = days;
+                    document.getElementById(`hours-${idPrefix}`).textContent = hours;
+                    document.getElementById(`minutes-${idPrefix}`).textContent = minutes;
+                    document.getElementById(`seconds-${idPrefix}`).textContent = seconds;
+
+                    if (distance < 0) {
+                        clearInterval(this);
+                        document.getElementById(`countdown-${idPrefix}`).innerHTML = `<h2>Evenimentul a început!</h2>`;
+                    }
+                }, 1000);
+            }
+
+            // Create countdowns for all three events
+            createCountdown("Mar 15, 2025 00:00:00", "simulare");
+            createCountdown("Mar 30, 2025 00:00:00", "inscrieri");
+            createCountdown("Apr 5, 2025 00:00:00", "preadmitere");
+        </script>
     </body>
     </html>
     """
